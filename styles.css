@@ -46,4 +46,12 @@ input[role="switch"]:focus-visible { outline:2px solid #161616; outline-offset:2
 .record-button span { width:46px; height:46px; border-radius:50%; background:#e6412d; transition:.2s; }
 .record-button.recording span { width:24px; height:24px; border-radius:5px; }
 .status-line { position:absolute; z-index:5; left:8%; right:8%; bottom:max(18px, env(safe-area-inset-bottom)); display:flex; justify-content:space-between; color:rgba(255,255,255,.76); font-size:12px; font-variant-numeric:tabular-nums; }
+.save-sheet { position:fixed; z-index:20; inset:0; display:flex; align-items:flex-end; background:rgba(0,0,0,.66); }
+.save-panel { width:100%; padding:18px 18px max(24px, env(safe-area-inset-bottom)); border-radius:8px 8px 0 0; background:#f4f3ef; color:#171716; }
+.save-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.save-header h2 { margin:0; font-size:20px; }
+.close-sheet { width:40px; height:40px; border:0; background:transparent; color:#222; font-size:28px; }
+#recordingPreview { width:100%; max-height:48dvh; border-radius:6px; background:#111; }
+.save-button { width:100%; min-height:50px; margin-top:14px; border:0; border-radius:6px; background:#e6412d; color:#fff; font-weight:750; }
+#saveHint { margin:10px 0 0; color:#706e68; font-size:13px; text-align:center; }
 @media (max-width:430px) { .editor-header { align-items:flex-end; } .settings-grid { grid-template-columns:1fr; } textarea { min-height:39dvh; } .prompt-viewport { left:6%; right:6%; } }

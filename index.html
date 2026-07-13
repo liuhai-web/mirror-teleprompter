@@ -73,6 +73,15 @@
       </div>
       <div class="status-line"><span id="speedLabel">3×</span><span id="recordStatus">准备就绪</span><span id="timeLabel">00:00</span></div>
     </section>
+
+    <section id="saveSheet" class="save-sheet" hidden aria-label="保存录制视频">
+      <div class="save-panel">
+        <div class="save-header"><h2>录制完成</h2><button id="discardButton" class="close-sheet" aria-label="关闭">×</button></div>
+        <video id="recordingPreview" controls playsinline></video>
+        <button id="saveButton" class="save-button">保存视频</button>
+        <p id="saveHint">点击后在系统面板中选择“存储视频”。</p>
+      </div>
+    </section>
   </main>
   <script src="app.js"></script>
 </body>
