@@ -27,12 +27,19 @@ async function countdownAndPlay(){ const seconds=Number(els.countdown.value); if
 function changeSpeed(delta){ els.speed.value=Math.max(1,Math.min(6,Number(els.speed.value)+delta)); syncSettings(); }
 
 function startRecording(){
-  if(!state.stream || typeof MediaRecorder==='undefined'){ alert('当前浏览器不支持网页录制，你仍可以使用系统录屏功能。'); return; }
-  const preferred=['video/mp4','video/webm;codecs=vp9,opus','video/webm']; const mimeType=preferred.find(x=>MediaRecorder.isTypeSupported(x));
-  try { state.chunks=[]; state.recorder=new MediaRecorder(state.stream, mimeType?{mimeType}:undefined); state.recorder.ondataavailable=e=>{if(e.data.size)state.chunks.push(e.data)}; state.recorder.onstop=saveRecording; state.recorder.start(1000); state.recording=true; state.startedAt=Date.now(); els.recordButton.classList.add('recording'); els.recordStatus.textContent='录制中'; state.timer=setInterval(()=>els.timeLabel.textContent=formatTime(Math.floor((Date.now()-state.startedAt)/1000)),1000); }
-  catch(e){ alert(`无法开始录制：${e.message}`); }
+  els.recordStatus.textContent='正在启动录制…';
+  if(!state.stream){ els.recordStatus.textContent='相机尚未就绪'; return; }
+  if(typeof MediaRecorder==='undefined'){ els.recordStatus.textContent='此浏览器不支持录制'; return; }
+  const preferred=['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp8,opus','video/webm']; const mimeType=preferred.find(x=>MediaRecorder.isTypeSupported(x));
+  try {
+    state.chunks=[]; state.recorder=new MediaRecorder(state.stream,mimeType?{mimeType}:undefined);
+    state.recorder.ondataavailable=e=>{if(e.data.size)state.chunks.push(e.data)};
+    state.recorder.onstop=()=>{ if(state.chunks.length) saveRecording(); else els.recordStatus.textContent='没有录到视频数据'; };
+    state.recorder.onerror=e=>{ els.recordStatus.textContent=`录制错误：${e.error?.name||'未知错误'}`; };
+    state.recorder.start(500); state.recording=true; state.startedAt=Date.now(); els.recordButton.classList.add('recording'); els.recordButton.setAttribute('aria-label','停止录制'); els.recordStatus.textContent='录制中'; state.timer=setInterval(()=>els.timeLabel.textContent=formatTime(Math.floor((Date.now()-state.startedAt)/1000)),1000);
+  } catch(e){ els.recordStatus.textContent=`启动失败：${e.name||e.message}`; }
 }
-function stopRecording(){ state.recorder?.stop(); state.recording=false; clearInterval(state.timer); els.recordButton.classList.remove('recording'); els.recordStatus.textContent='正在保存'; }
+function stopRecording(){ state.recorder?.stop(); state.recording=false; clearInterval(state.timer); els.recordButton.classList.remove('recording'); els.recordButton.setAttribute('aria-label','开始录制'); els.recordStatus.textContent='正在生成视频…'; }
 function saveRecording(){
   const type=state.recorder?.mimeType||'video/mp4'; const ext=type.includes('mp4')?'mp4':'webm'; const name=`提词拍摄-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.${ext}`;
   state.recordingBlob=new Blob(state.chunks,{type}); state.recordingFile=new File([state.recordingBlob],name,{type}); state.recordingUrl=URL.createObjectURL(state.recordingBlob);
@@ -45,13 +52,15 @@ async function saveToPhone(){
   } catch(error){ if(error.name!=='AbortError') els.saveHint.textContent='保存失败，请长按上方视频选择存储'; }
 }
 function closeSaveSheet(){ els.recordingPreview.pause(); els.recordingPreview.removeAttribute('src'); els.recordingPreview.load(); if(state.recordingUrl) URL.revokeObjectURL(state.recordingUrl); state.recordingUrl=null; els.saveSheet.hidden=true; }
-function toggleRecording(event){ event?.stopPropagation(); const now=Date.now(); if(now-state.lastRecordTap<400)return; state.lastRecordTap=now; state.recording?stopRecording():startRecording(); }
+function toggleRecording(event){ event?.preventDefault(); event?.stopPropagation(); const now=Date.now(); if(now-state.lastRecordTap<500)return; state.lastRecordTap=now; state.recording?stopRecording():startRecording(); }
 
 const saved=localStorage.getItem('teleprompterScript'); if(saved) els.scriptInput.value=saved;
 els.scriptInput.addEventListener('input',updateCount); els.fontSize.addEventListener('input',syncSettings); els.speed.addEventListener('input',syncSettings);
 els.startButton.addEventListener('click',openCamera); els.closeButton.addEventListener('click',closeCamera); els.flipButton.addEventListener('click',flipCamera);
 els.playButton.addEventListener('click',countdownAndPlay); els.slowerButton.addEventListener('click',()=>changeSpeed(-1)); els.fasterButton.addEventListener('click',()=>changeSpeed(1));
-els.recordButton.addEventListener('pointerup',toggleRecording); els.recordButton.addEventListener('click',toggleRecording);
+els.recordButton.addEventListener('touchstart',toggleRecording,{passive:false});
+els.recordButton.addEventListener('pointerup',event=>event.stopPropagation());
+els.recordButton.addEventListener('click',toggleRecording);
 els.saveButton.addEventListener('click',saveToPhone); els.discardButton.addEventListener('click',closeSaveSheet);
 els.camera.addEventListener('pointerup',(event)=>{
   if(event.target.closest('button')) return;

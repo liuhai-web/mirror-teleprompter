@@ -43,9 +43,12 @@ input[role="switch"]:focus-visible { outline:2px solid #161616; outline-offset:2
 .tool-button { width:44px; height:44px; border:1px solid rgba(255,255,255,.25); background:rgba(0,0,0,.4); font-size:25px; }
 .play-button { width:58px; height:58px; border:0; background:#fff; color:#111; font-size:20px; }
 .record-button { width:62px; height:62px; border:3px solid #fff; background:transparent; }
+.record-button { touch-action:none; -webkit-tap-highlight-color:transparent; }
 .record-button span { width:46px; height:46px; border-radius:50%; background:#e6412d; transition:.2s; }
 .record-button.recording span { width:24px; height:24px; border-radius:5px; }
-.status-line { position:absolute; z-index:5; left:8%; right:8%; bottom:max(18px, env(safe-area-inset-bottom)); display:flex; justify-content:space-between; color:rgba(255,255,255,.76); font-size:12px; font-variant-numeric:tabular-nums; }
+.status-line { position:absolute; z-index:5; left:8%; right:8%; bottom:max(18px, env(safe-area-inset-bottom)); display:grid; grid-template-columns:52px 1fr 52px; align-items:center; color:rgba(255,255,255,.82); font-size:12px; font-variant-numeric:tabular-nums; }
+#recordStatus { text-align:center; overflow-wrap:anywhere; }
+#timeLabel { text-align:right; }
 .save-sheet { position:fixed; z-index:20; inset:0; display:flex; align-items:flex-end; background:rgba(0,0,0,.66); }
 .save-panel { width:100%; padding:18px 18px max(24px, env(safe-area-inset-bottom)); border-radius:8px 8px 0 0; background:#f4f3ef; color:#171716; }
 .save-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
