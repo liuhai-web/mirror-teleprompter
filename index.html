@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>镜前词</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <section id="editor" class="editor-screen">
+      <header class="editor-header">
+        <div>
+          <p class="eyebrow">手机拍摄提词器</p>
+          <h1>镜前词</h1>
+        </div>
+        <button id="startButton" class="primary-button">开始拍摄</button>
+      </header>
+
+      <label class="script-field">
+        <span>拍摄脚本</span>
+        <textarea id="scriptInput" placeholder="把要拍摄的文案粘贴到这里……">大家好，今天我想用一分钟，和你分享一个让表达更自然的小方法。
+
+拍摄前，不要急着背下整段内容。先找到这段话最想传达的一个重点，再用你平时说话的语气讲出来。
+
+看着镜头，放慢一点。每说完一句，留半秒钟的停顿。你会发现，画面更从容，观众也更容易听进去。
+
+准备好了吗？我们现在开始。</textarea>
+        <span id="charCount" class="char-count">0 字</span>
+      </label>
+
+      <div class="settings-grid">
+        <label class="setting">
+          <span>字号 <strong id="fontValue">32</strong></span>
+          <input id="fontSize" type="range" min="22" max="52" value="32">
+        </label>
+        <label class="setting">
+          <span>速度 <strong id="speedValue">3</strong></span>
+          <input id="speed" type="range" min="1" max="6" value="3">
+        </label>
+        <label class="setting">
+          <span>倒计时</span>
+          <select id="countdown"><option value="0">关闭</option><option value="3" selected>3 秒</option><option value="5">5 秒</option><option value="10">10 秒</option></select>
+        </label>
+        <label class="setting toggle-setting">
+          <span>镜像文字</span>
+          <input id="mirrorText" type="checkbox" role="switch">
+        </label>
+      </div>
+
+      <div class="note"><span>提示</span>首次开始时，请允许浏览器使用相机和麦克风。录制完成后，视频会保存在手机相册或下载目录。</div>
+    </section>
+
+    <section id="camera" class="camera-screen" hidden>
+      <video id="cameraPreview" playsinline muted></video>
+      <div class="shade"></div>
+      <div id="countdownOverlay" class="countdown-overlay" hidden></div>
+      <button id="closeButton" class="icon-button top-left" aria-label="返回编辑" title="返回编辑">×</button>
+      <button id="flipButton" class="icon-button top-right" aria-label="切换镜头" title="切换镜头">↻</button>
+
+      <div id="promptViewport" class="prompt-viewport">
+        <div id="promptText" class="prompt-text"></div>
+      </div>
+
+      <div class="progress-track"><div id="progressBar"></div></div>
+      <div class="camera-controls">
+        <button id="slowerButton" class="tool-button" aria-label="减速" title="减速">−</button>
+        <button id="playButton" class="play-button" aria-label="播放或暂停"><span id="playIcon">▶</span></button>
+        <button id="fasterButton" class="tool-button" aria-label="加速" title="加速">＋</button>
+        <button id="recordButton" class="record-button" aria-label="开始录制"><span></span></button>
+      </div>
+      <div class="status-line"><span id="speedLabel">3×</span><span id="recordStatus">准备就绪</span><span id="timeLabel">00:00</span></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

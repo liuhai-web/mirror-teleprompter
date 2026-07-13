@@ -1,0 +1,10 @@
+{
+  "name": "镜前词 - 手机视频提词器",
+  "short_name": "镜前词",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait-primary",
+  "icons": []
+}
