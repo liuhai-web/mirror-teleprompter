@@ -5,7 +5,7 @@ const els = Object.fromEntries(['editor','camera','scriptInput','charCount','fon
 function updateCount(){ els.charCount.textContent = `${els.scriptInput.value.replace(/\s/g,'').length} 字`; localStorage.setItem('teleprompterScript', els.scriptInput.value); }
 function syncSettings(){ els.fontValue.textContent=els.fontSize.value; els.speedValue.textContent=els.speed.value; els.speedLabel.textContent=`${els.speed.value}×`; els.promptText.style.fontSize=`${els.fontSize.value}px`; }
 function formatTime(sec){ return `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`; }
-function setPlay(value){ state.playing=value; els.playIcon.textContent=value?'Ⅱ':'▶'; els.playButton.setAttribute('aria-label', value?'暂停':'播放'); state.lastTime=performance.now(); }
+function setPlay(value){ state.playing=value; els.playIcon.textContent=value?'Ⅱ':'▶'; els.playButton.setAttribute('aria-label', value?'暂停':'播放'); if(!state.recording) els.recordStatus.textContent=value?'滚动中':'已暂停'; state.lastTime=performance.now(); }
 function resetPrompt(){ state.offset=0; els.promptText.style.translate='0 0'; els.progressBar.style.width='0%'; setPlay(false); }
 
 async function openCamera(){
@@ -40,7 +40,10 @@ els.scriptInput.addEventListener('input',updateCount); els.fontSize.addEventList
 els.startButton.addEventListener('click',openCamera); els.closeButton.addEventListener('click',closeCamera); els.flipButton.addEventListener('click',flipCamera);
 els.playButton.addEventListener('click',countdownAndPlay); els.slowerButton.addEventListener('click',()=>changeSpeed(-1)); els.fasterButton.addEventListener('click',()=>changeSpeed(1));
 els.recordButton.addEventListener('click',()=>state.recording?stopRecording():startRecording());
-els.promptViewport.addEventListener('click',()=>setPlay(!state.playing));
+els.camera.addEventListener('pointerup',(event)=>{
+  if(event.target.closest('button')) return;
+  setPlay(!state.playing);
+});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.playing)setPlay(false)});
 updateCount(); syncSettings(); requestAnimationFrame(animate);
 if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
